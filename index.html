@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tareas del Hogar</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiVGFyZWFzIGRlbCBIb2dhciIsInNob3J0X25hbWUiOiJUYXJlYXMiLCJzdGFydF91cmwiOiIvIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzJkM2E4YyIsInRoZW1lX2NvbG9yIjoiIzJkM2E4YyIsImljb25zIjpbeyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSFpwWlhkQ2IzZzlJakFnTUNBek1qQWdNekl3SWlCbWFXeHNQU0lqTWpRek5UY3lJajQ4Y21WamRDQjNhV1IwYUQwaU16SXdJaUJvWldsbmFIUTlJak15TUNJU0lHWnBiR3c5SWlNeU5ETTFOeklpTHo0OGRHVjRkQ0I0UFNJeE5qQWlJSGs5SWpFMk1DSWlJSFJsZUhRdFlXNWphRzl5UFNKdGFXUmtiR1VpSUdacGJHdzlJaU0xTlRVMU5UVWlJR1p2Ym5RdGMybDZaVDBpTWpBaVBqcHNZbTl5WlM4OGRHVjRkRDQ4TDNOMlp6ND0iLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Tareas del Hogar">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #2d3a8c;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .date-display {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            border: 2px solid #e1e5ff;
+        }
+        
+        .date-display h2 {
+            color: #2d3a8c;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .date-display p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .tasks-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: #2d3a8c;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title::before {
+            content: '✨';
+            margin-right: 8px;
+        }
+        
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .task-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .task-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .task-item.overdue {
+            border-left-color: #ff6b6b;
+            background: #fff5f5;
+        }
+        
+        .task-item.due-today {
+            border-left-color: #ffd93d;
+            background: #fffdf0;
+        }
+        
+        .task-name {
+            font-weight: 600;
+            color: #2d3a8c;
+            margin-bottom: 5px;
+        }
+        
+        .task-info {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .days-left {
+            background: #e1e5ff;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 11px;
+        }
+        
+        .overdue .days-left {
+            background: #ffe1e1;
+            color: #d63031;
+        }
+        
+        .due-today .days-left {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            flex: 1;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .add-task-form {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 2px solid #e1e5ff;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2d3a8c;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .no-tasks {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+        
+        function toggleCalendarView() {
+            const tasksSection = document.querySelector('.tasks-section');
+            const calendarView = document.getElementById('calendar-view');
+            const calendarButton = document.querySelector('button[onclick="toggleCalendarView()"]');
+            
+            isCalendarView = !isCalendarView;
+            
+            if (isCalendarView) {
+                tasksSection.classList.add('hidden');
+                calendarView.classList.remove('hidden');
+                calendarButton.textContent = '📋 Lista';
+                renderCalendar();
+            } else {
+                tasksSection.classList.remove('hidden');
+                calendarView.classList.add('hidden');
+                calendarButton.textContent = '📅 Calendario';
+            }
+        }
+        
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const monthHeader = document.getElementById('calendar-month');
+            
+            // Configurar el header del mes
+            const monthNames = [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            ];
+            monthHeader.textContent = `${monthNames[currentCalendarDate.getMonth()]} ${currentCalendarDate.getFullYear()}`;
+            
+            // Limpiar grid
+            grid.innerHTML = '';
+            
+            // Headers de días
+            const dayHeaders = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+            dayHeaders.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'calendar-day-header';
+                header.textContent = day;
+                grid.appendChild(header);
+            });
+            
+            // Obtener datos del mes
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
+            
+            // Generar días del calendario
+            const today = new Date();
+            for (let i = 0; i < 42; i++) {
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+                
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                
+                if (date.getMonth() !== month) {
+                    dayDiv.classList.add('other-month');
+                }
+                
+                if (date.toDateString() === today.toDateString()) {
+                    dayDiv.classList.add('today');
+                }
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = date.getDate();
+                dayDiv.appendChild(dayNumber);
+                
+                // Agregar puntos de tareas
+                const tasksForDay = getTasksForDate(date);
+                if (tasksForDay.length > 0) {
+                    const dotsContainer = document.createElement('div');
+                    dotsContainer.className = 'task-dots';
+                    
+                    tasksForDay.forEach(taskInfo => {
+                        const dot = document.createElement('div');
+                        dot.className = `task-dot ${taskInfo.status}`;
+                        dot.title = `${taskInfo.task.name} - ${taskInfo.statusText}`;
+                        dotsContainer.appendChild(dot);
+                    });
+                    
+                    dayDiv.appendChild(dotsContainer);
+                }
+                
+                // Click handler para mostrar tareas del día
+                dayDiv.onclick = () => showDayTasks(date, tasksForDay);
+                
+                grid.appendChild(dayDiv);
+            }
+        }
+        
+        function getTasksForDate(date) {
+            const tasksForDay = [];
+            
+            tasks.forEach(task => {
+                const daysLeft = calculateDaysLeft(task.lastDone, task.frequency);
+                const nextDueDate = new Date(task.lastDone);
+                nextDueDate.setDate(nextDueDate.getDate() + task.frequency);
+                
+                if (nextDueDate.toDateString() === date.toDateString()) {
+                    let status = 'upcoming';
+                    let statusText = 'Próxima';
+                    
+                    if (daysLeft < 0) {
+                        status = 'overdue';
+                        statusText = 'Atrasada';
+                    } else if (daysLeft === 0) {
+                        status = 'due-today';
+                        statusText = 'Vence hoy';
+                    }
+                    
+                    tasksForDay.push({
+                        task: task,
+                        status: status,
+                        statusText: statusText
+                    });
+                }
+            });
+            
+            return tasksForDay;
+        }
+        
+        function showDayTasks(date, tasksForDay) {
+            if (tasksForDay.length === 0) return;
+            
+            const dateStr = date.toLocaleDateString('es-ES', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            let message = `📅 ${dateStr}\n\nTareas:\n`;
+            tasksForDay.forEach(taskInfo => {
+                message += `• ${taskInfo.task.name} (${taskInfo.statusText})\n`;
+            });
+            
+            if (confirm(message + '\n¿Marcar todas como completadas?')) {
+                tasksForDay.forEach(taskInfo => {
+                    taskInfo.task.lastDone = new Date();
+                });
+                saveTasks();
+                renderCalendar();
+            }
+        }
+        
+        function changeMonth(direction) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            renderCalendar();
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 Tareas del Hogar</h1>
+        </div>
+        
+        <div class="date-display">
+            <h2 id="current-date"></h2>
+            <p id="current-day"></p>
+        </div>
+        
+        <div class="controls">
+            <button onclick="toggleAddForm()">➕ Nueva Tarea</button>
+            <button onclick="markAllDone()">✅ Marcar Hechas</button>
+        </div>
+        
+        <div id="add-task-form" class="add-task-form hidden">
+            <h3 style="color: #2d3a8c; margin-bottom: 15px;">Nueva Tarea</h3>
+            <div class="form-group">
+                <label for="task-name">Nombre de la tarea:</label>
+                <input type="text" id="task-name" placeholder="Ej: Lavar sábanas">
+            </div>
+            <div class="form-group">
+                <label for="task-frequency">Frecuencia (días):</label>
+                <input type="number" id="task-frequency" value="7" min="1">
+            </div>
+            <div class="form-group">
+                <button onclick="addTask()" style="margin: 0;">Agregar Tarea</button>
+            </div>
+        </div>
+        
+        <div class="tasks-section">
+            <h2 class="section-title">Tareas Pendientes</h2>
+            <div id="overdue-tasks" class="task-list"></div>
+            <div id="due-today-tasks" class="task-list"></div>
+            <div id="upcoming-tasks" class="task-list"></div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo precargados
+        let tasks = [
+            { id: 1, name: 'Lavar sábanas', frequency: 7, lastDone: new Date('2025-09-02') },
+            { id: 2, name: 'Barrer la casa', frequency: 4, lastDone: new Date('2025-09-05') },
+            { id: 3, name: 'Limpiar baños', frequency: 6, lastDone: new Date('2025-09-03') },
+            { id: 4, name: 'Aspirar alfombras', frequency: 5, lastDone: new Date('2025-09-04') },
+            { id: 5, name: 'Limpiar cocina a fondo', frequency: 3, lastDone: new Date('2025-09-06') }
+        ];
+        
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            
+            document.getElementById('current-date').textContent = 
+                now.toLocaleDateString('es-ES', options);
+            document.getElementById('current-day').textContent = 
+                `Semana ${getWeekNumber(now)}`;
+        }
+        
+        function getWeekNumber(date) {
+            const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+            const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+            return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+        }
+        
+        function calculateDaysLeft(lastDone, frequency) {
+            const now = new Date();
+            const nextDue = new Date(lastDone);
+            nextDue.setDate(nextDue.getDate() + frequency);
+            
+            const diffTime = nextDue - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+        
+        function renderTasks() {
+            const overdueContainer = document.getElementById('overdue-tasks');
+            const dueTodayContainer = document.getElementById('due-today-tasks');
+            const upcomingContainer = document.getElementById('upcoming-tasks');
+            
+            overdueContainer.innerHTML = '';
+            dueTodayContainer.innerHTML = '';
+            upcomingContainer.innerHTML = '';
+            
+            const sortedTasks = tasks.sort((a, b) => {
+                const daysA = calculateDaysLeft(a.lastDone, a.frequency);
+                const daysB = calculateDaysLeft(b.lastDone, b.frequency);
+                return daysA - daysB;
+            });
+            
+            sortedTasks.forEach(task => {
+                const daysLeft = calculateDaysLeft(task.lastDone, task.frequency);
+                const taskElement = createTaskElement(task, daysLeft);
+                
+                if (daysLeft < 0) {
+                    taskElement.classList.add('overdue');
+                    overdueContainer.appendChild(taskElement);
+                } else if (daysLeft === 0) {
+                    taskElement.classList.add('due-today');
+                    dueTodayContainer.appendChild(taskElement);
+                } else {
+                    upcomingContainer.appendChild(taskElement);
+                }
+            });
+        }
+        
+        function createTaskElement(task, daysLeft) {
+            const taskDiv = document.createElement('div');
+            taskDiv.className = 'task-item';
+            
+            let statusText = '';
+            if (daysLeft < 0) {
+                statusText = `¡${Math.abs(daysLeft)} día${Math.abs(daysLeft) > 1 ? 's' : ''} atrasada!`;
+            } else if (daysLeft === 0) {
+                statusText = 'Vence hoy';
+            } else {
+                statusText = `Faltan ${daysLeft} día${daysLeft > 1 ? 's' : ''}`;
+            }
+            
+            taskDiv.innerHTML = `
+                <div class="task-name">${task.name}</div>
+                <div class="task-info">
+                    <span>Cada ${task.frequency} día${task.frequency > 1 ? 's' : ''}</span>
+                    <span class="days-left">${statusText}</span>
+                </div>
+            `;
+            
+            taskDiv.onclick = () => markTaskDone(task.id);
+            
+            return taskDiv;
+        }
+        
+        function markTaskDone(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.lastDone = new Date();
+                renderTasks();
+            }
+        }
+        
+        function markAllDone() {
+            const now = new Date();
+            const overdueTasks = tasks.filter(task => 
+                calculateDaysLeft(task.lastDone, task.frequency) <= 0
+            );
+            
+            if (overdueTasks.length === 0) {
+                alert('No hay tareas pendientes para marcar como hechas.');
+                return;
+            }
+            
+            if (confirm(`¿Marcar ${overdueTasks.length} tarea${overdueTasks.length > 1 ? 's' : ''} como completada${overdueTasks.length > 1 ? 's' : ''}?`)) {
+                overdueTasks.forEach(task => {
+                    task.lastDone = now;
+                });
+                renderTasks();
+            }
+        }
+        
+        function toggleAddForm() {
+            const form = document.getElementById('add-task-form');
+            form.classList.toggle('hidden');
+        }
+        
+        function addTask() {
+            const name = document.getElementById('task-name').value.trim();
+            const frequency = parseInt(document.getElementById('task-frequency').value);
+            
+            if (!name) {
+                alert('Por favor ingresa un nombre para la tarea.');
+                return;
+            }
+            
+            if (frequency < 1) {
+                alert('La frecuencia debe ser al menos 1 día.');
+                return;
+            }
+            
+            const newTask = {
+                id: Date.now(),
+                name: name,
+                frequency: frequency,
+                lastDone: new Date()
+            };
+            
+            tasks.push(newTask);
+            renderTasks();
+            
+            // Limpiar formulario
+            document.getElementById('task-name').value = '';
+            document.getElementById('task-frequency').value = '7';
+            toggleAddForm();
+        }
+        
+        function resetData() {
+            if (confirm('¿Estás seguro de que quieres borrar todos los datos y volver a empezar? Esta acción no se puede deshacer.')) {
+                localStorage.removeItem('houseTasks');
+                tasks = loadTasks();
+                renderTasks();
+                alert('Datos reseteados. La app ha vuelto a su estado inicial.');
+            }
+        }
+        
+        // Inicializar la aplicación
+        updateDateTime();
+        renderTasks();
+        
+        // Actualizar fecha cada minuto
+        setInterval(updateDateTime, 60000);
+        
+        // Actualizar tareas cada hora
+        setInterval(renderTasks, 3600000);
+        
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('data:application/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgZnVuY3Rpb24oZSkge30pOw==')
+                .then(function(registration) {
+                    console.log('ServiceWorker registrado exitosamente');
+                })
+                .catch(function(error) {
+                    console.log('Error al registrar ServiceWorker');
+                });
+            });
+        }
+    </script>
+</body>
+</html>
