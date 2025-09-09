@@ -420,14 +420,34 @@
     </div>
 
     <script>
-        // Datos de ejemplo precargados
-        let tasks = [
+
+        // Añadimos funciones para guardar y cargar en localstorage
+
+        function saveTasks() {
+        localStorage.setItem('houseTasks', JSON.stringify(tasks));
+        }
+
+        function loadTasks() {
+        const saved = localStorage.getItem('houseTasks');
+        if (saved) {
+            return JSON.parse(saved).map(t => ({
+            ...t,
+            lastDone: new Date(t.lastDone) // recuperar fechas
+            }));
+        }
+        return [
             { id: 1, name: 'Lavar sábanas', frequency: 7, lastDone: new Date('2025-09-02') },
             { id: 2, name: 'Barrer la casa', frequency: 4, lastDone: new Date('2025-09-05') },
             { id: 3, name: 'Limpiar baños', frequency: 6, lastDone: new Date('2025-09-03') },
             { id: 4, name: 'Aspirar alfombras', frequency: 5, lastDone: new Date('2025-09-04') },
             { id: 5, name: 'Limpiar cocina a fondo', frequency: 3, lastDone: new Date('2025-09-06') }
         ];
+        }
+
+        
+        // Datos de ejemplo precargados
+        let tasks = loadTasks();
+
         
         function updateDateTime() {
             const now = new Date();
@@ -521,6 +541,7 @@
             const task = tasks.find(t => t.id === taskId);
             if (task) {
                 task.lastDone = new Date();
+                saveTasks();
                 renderTasks();
             }
         }
@@ -540,6 +561,7 @@
                 overdueTasks.forEach(task => {
                     task.lastDone = now;
                 });
+                saveTasks();
                 renderTasks();
             }
         }
@@ -571,6 +593,7 @@
             };
             
             tasks.push(newTask);
+            saveTasks();
             renderTasks();
             
             // Limpiar formulario
@@ -583,6 +606,7 @@
             if (confirm('¿Estás seguro de que quieres borrar todos los datos y volver a empezar? Esta acción no se puede deshacer.')) {
                 localStorage.removeItem('houseTasks');
                 tasks = loadTasks();
+                saveTasks();
                 renderTasks();
                 alert('Datos reseteados. La app ha vuelto a su estado inicial.');
             }
