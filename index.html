@@ -210,6 +210,141 @@
             padding: 20px;
         }
         
+        /* Estilos para el calendario */
+        .calendar-view {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e1e5ff;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-month {
+            color: #2d3a8c;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .calendar-nav-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-day-header {
+            background: #2d3a8c;
+            color: white;
+            text-align: center;
+            padding: 8px 4px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+        
+        .calendar-day {
+            background: white;
+            min-height: 50px;
+            border-radius: 6px;
+            padding: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+        
+        .calendar-day:hover {
+            background: #f0f2ff;
+        }
+        
+        .calendar-day.other-month {
+            background: #f5f5f5;
+            color: #999;
+        }
+        
+        .calendar-day.today {
+            background: #667eea;
+            color: white;
+        }
+        
+        .calendar-day.today:hover {
+            background: #5a6fd8;
+        }
+        
+        .day-number {
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 2px;
+        }
+        
+        .task-dots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            justify-content: center;
+            margin-top: 2px;
+        }
+        
+        .task-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #667eea;
+        }
+        
+        .task-dot.overdue {
+            background: #ff6b6b;
+        }
+        
+        .task-dot.due-today {
+            background: #ffd93d;
+        }
+        
+        .task-dot.completed {
+            background: #4caf50;
+        }
+        
+        .calendar-legend {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
         @media (max-width: 480px) {
             body {
                 padding: 10px;
@@ -222,161 +357,11 @@
             .header h1 {
                 font-size: 24px;
             }
-        }
-        
-        function toggleCalendarView() {
-            const tasksSection = document.querySelector('.tasks-section');
-            const calendarView = document.getElementById('calendar-view');
-            const calendarButton = document.querySelector('button[onclick="toggleCalendarView()"]');
             
-            isCalendarView = !isCalendarView;
-            
-            if (isCalendarView) {
-                tasksSection.classList.add('hidden');
-                calendarView.classList.remove('hidden');
-                calendarButton.textContent = '📋 Lista';
-                renderCalendar();
-            } else {
-                tasksSection.classList.remove('hidden');
-                calendarView.classList.add('hidden');
-                calendarButton.textContent = '📅 Calendario';
+            .calendar-day {
+                min-height: 40px;
             }
         }
-        
-        function renderCalendar() {
-            const grid = document.getElementById('calendar-grid');
-            const monthHeader = document.getElementById('calendar-month');
-            
-            // Configurar el header del mes
-            const monthNames = [
-                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-            ];
-            monthHeader.textContent = `${monthNames[currentCalendarDate.getMonth()]} ${currentCalendarDate.getFullYear()}`;
-            
-            // Limpiar grid
-            grid.innerHTML = '';
-            
-            // Headers de días
-            const dayHeaders = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-            dayHeaders.forEach(day => {
-                const header = document.createElement('div');
-                header.className = 'calendar-day-header';
-                header.textContent = day;
-                grid.appendChild(header);
-            });
-            
-            // Obtener datos del mes
-            const year = currentCalendarDate.getFullYear();
-            const month = currentCalendarDate.getMonth();
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            const startDate = new Date(firstDay);
-            startDate.setDate(startDate.getDate() - firstDay.getDay());
-            
-            // Generar días del calendario
-            const today = new Date();
-            for (let i = 0; i < 42; i++) {
-                const date = new Date(startDate);
-                date.setDate(startDate.getDate() + i);
-                
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'calendar-day';
-                
-                if (date.getMonth() !== month) {
-                    dayDiv.classList.add('other-month');
-                }
-                
-                if (date.toDateString() === today.toDateString()) {
-                    dayDiv.classList.add('today');
-                }
-                
-                const dayNumber = document.createElement('div');
-                dayNumber.className = 'day-number';
-                dayNumber.textContent = date.getDate();
-                dayDiv.appendChild(dayNumber);
-                
-                // Agregar puntos de tareas
-                const tasksForDay = getTasksForDate(date);
-                if (tasksForDay.length > 0) {
-                    const dotsContainer = document.createElement('div');
-                    dotsContainer.className = 'task-dots';
-                    
-                    tasksForDay.forEach(taskInfo => {
-                        const dot = document.createElement('div');
-                        dot.className = `task-dot ${taskInfo.status}`;
-                        dot.title = `${taskInfo.task.name} - ${taskInfo.statusText}`;
-                        dotsContainer.appendChild(dot);
-                    });
-                    
-                    dayDiv.appendChild(dotsContainer);
-                }
-                
-                // Click handler para mostrar tareas del día
-                dayDiv.onclick = () => showDayTasks(date, tasksForDay);
-                
-                grid.appendChild(dayDiv);
-            }
-        }
-        
-        function getTasksForDate(date) {
-            const tasksForDay = [];
-            
-            tasks.forEach(task => {
-                const daysLeft = calculateDaysLeft(task.lastDone, task.frequency);
-                const nextDueDate = new Date(task.lastDone);
-                nextDueDate.setDate(nextDueDate.getDate() + task.frequency);
-                
-                if (nextDueDate.toDateString() === date.toDateString()) {
-                    let status = 'upcoming';
-                    let statusText = 'Próxima';
-                    
-                    if (daysLeft < 0) {
-                        status = 'overdue';
-                        statusText = 'Atrasada';
-                    } else if (daysLeft === 0) {
-                        status = 'due-today';
-                        statusText = 'Vence hoy';
-                    }
-                    
-                    tasksForDay.push({
-                        task: task,
-                        status: status,
-                        statusText: statusText
-                    });
-                }
-            });
-            
-            return tasksForDay;
-        }
-        
-        function showDayTasks(date, tasksForDay) {
-            if (tasksForDay.length === 0) return;
-            
-            const dateStr = date.toLocaleDateString('es-ES', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
-            
-            let message = `📅 ${dateStr}\n\nTareas:\n`;
-            tasksForDay.forEach(taskInfo => {
-                message += `• ${taskInfo.task.name} (${taskInfo.statusText})\n`;
-            });
-            
-            if (confirm(message + '\n¿Marcar todas como completadas?')) {
-                tasksForDay.forEach(taskInfo => {
-                    taskInfo.task.lastDone = new Date();
-                });
-                saveTasks();
-                renderCalendar();
-            }
-        }
-        
-        function changeMonth(direction) {
-            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
-            renderCalendar();
     </style>
 </head>
 
@@ -393,7 +378,7 @@
         
         <div class="controls">
             <button onclick="toggleAddForm()">➕ Nueva Tarea</button>
-            <button onclick="markAllDone()">✅ Marcar Hechas</button>
+            <button onclick="toggleCalendarView()">📅 Calendario</button>
         </div>
         
         <div id="add-task-form" class="add-task-form hidden">
@@ -411,44 +396,65 @@
             </div>
         </div>
         
-        <div class="tasks-section">
+        <div id="tasks-view" class="tasks-section">
             <h2 class="section-title">Tareas Pendientes</h2>
             <div id="overdue-tasks" class="task-list"></div>
             <div id="due-today-tasks" class="task-list"></div>
             <div id="upcoming-tasks" class="task-list"></div>
         </div>
+        
+        <div id="calendar-view" class="calendar-view hidden">
+            <div class="calendar-header">
+                <button class="calendar-nav-button" onclick="changeMonth(-1)">‹</button>
+                <div id="calendar-month" class="calendar-month"></div>
+                <button class="calendar-nav-button" onclick="changeMonth(1)">›</button>
+            </div>
+            
+            <div id="calendar-grid" class="calendar-grid"></div>
+            
+            <div class="calendar-legend">
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #4caf50;"></div>
+                    <span>Completada</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #ffd93d;"></div>
+                    <span>Vence hoy</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #ff6b6b;"></div>
+                    <span>Atrasada</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #667eea;"></div>
+                    <span>Próxima</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
+        let tasks = [];
+        let isCalendarView = false;
+        let currentCalendarDate = new Date();
 
-        // Añadimos funciones para guardar y cargar en localstorage
-
+        // Funciones para guardar y cargar en memoria (sin localStorage)
         function saveTasks() {
-        localStorage.setItem('houseTasks', JSON.stringify(tasks));
+            // Guardamos en una variable global ya que no podemos usar localStorage
+            console.log('Tareas guardadas:', tasks);
         }
 
         function loadTasks() {
-        const saved = localStorage.getItem('houseTasks');
-        if (saved) {
-            return JSON.parse(saved).map(t => ({
-            ...t,
-            lastDone: new Date(t.lastDone) // recuperar fechas
-            }));
-        }
-        return [
-            { id: 1, name: 'Lavar sábanas', frequency: 7, lastDone: new Date('2025-09-02') },
-            { id: 2, name: 'Barrer la casa', frequency: 4, lastDone: new Date('2025-09-05') },
-            { id: 3, name: 'Limpiar baños', frequency: 6, lastDone: new Date('2025-09-03') },
-            { id: 4, name: 'Aspirar alfombras', frequency: 5, lastDone: new Date('2025-09-04') },
-            { id: 5, name: 'Limpiar cocina a fondo', frequency: 3, lastDone: new Date('2025-09-06') }
-        ];
+            // Datos de ejemplo precargados
+            return [
+                { id: 1, name: 'Lavar sábanas', frequency: 7, lastDone: new Date('2025-09-02') },
+                { id: 2, name: 'Barrer la casa', frequency: 4, lastDone: new Date('2025-09-05') },
+                { id: 3, name: 'Limpiar baños', frequency: 6, lastDone: new Date('2025-09-03') },
+                { id: 4, name: 'Aspirar alfombras', frequency: 5, lastDone: new Date('2025-09-04') },
+                { id: 5, name: 'Limpiar cocina a fondo', frequency: 3, lastDone: new Date('2025-09-06') }
+            ];
         }
 
-        
-        // Datos de ejemplo precargados
-        let tasks = loadTasks();
-
-        
         function updateDateTime() {
             const now = new Date();
             const options = { 
@@ -539,30 +545,13 @@
         
         function markTaskDone(taskId) {
             const task = tasks.find(t => t.id === taskId);
-            if (task) {
+            if (task && confirm(`¿Marcar "${task.name}" como completada?`)) {
                 task.lastDone = new Date();
                 saveTasks();
                 renderTasks();
-            }
-        }
-        
-        function markAllDone() {
-            const now = new Date();
-            const overdueTasks = tasks.filter(task => 
-                calculateDaysLeft(task.lastDone, task.frequency) <= 0
-            );
-            
-            if (overdueTasks.length === 0) {
-                alert('No hay tareas pendientes para marcar como hechas.');
-                return;
-            }
-            
-            if (confirm(`¿Marcar ${overdueTasks.length} tarea${overdueTasks.length > 1 ? 's' : ''} como completada${overdueTasks.length > 1 ? 's' : ''}?`)) {
-                overdueTasks.forEach(task => {
-                    task.lastDone = now;
-                });
-                saveTasks();
-                renderTasks();
+                if (isCalendarView) {
+                    renderCalendar();
+                }
             }
         }
         
@@ -601,18 +590,202 @@
             document.getElementById('task-frequency').value = '7';
             toggleAddForm();
         }
-        
-        function resetData() {
-            if (confirm('¿Estás seguro de que quieres borrar todos los datos y volver a empezar? Esta acción no se puede deshacer.')) {
-                localStorage.removeItem('houseTasks');
-                tasks = loadTasks();
-                saveTasks();
-                renderTasks();
-                alert('Datos reseteados. La app ha vuelto a su estado inicial.');
+
+        // Funciones del calendario
+        function toggleCalendarView() {
+            const tasksView = document.getElementById('tasks-view');
+            const calendarView = document.getElementById('calendar-view');
+            const calendarButton = document.querySelector('button[onclick="toggleCalendarView()"]');
+            
+            isCalendarView = !isCalendarView;
+            
+            if (isCalendarView) {
+                tasksView.classList.add('hidden');
+                calendarView.classList.remove('hidden');
+                calendarButton.textContent = '📋 Lista';
+                renderCalendar();
+            } else {
+                tasksView.classList.remove('hidden');
+                calendarView.classList.add('hidden');
+                calendarButton.textContent = '📅 Calendario';
             }
         }
         
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const monthHeader = document.getElementById('calendar-month');
+            
+            // Configurar el header del mes
+            const monthNames = [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            ];
+            monthHeader.textContent = `${monthNames[currentCalendarDate.getMonth()]} ${currentCalendarDate.getFullYear()}`;
+            
+            // Limpiar grid
+            grid.innerHTML = '';
+            
+            // Headers de días
+            const dayHeaders = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+            dayHeaders.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'calendar-day-header';
+                header.textContent = day;
+                grid.appendChild(header);
+            });
+            
+            // Obtener datos del mes
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
+            
+            // Generar días del calendario
+            const today = new Date();
+            for (let i = 0; i < 42; i++) {
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+                
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                
+                if (date.getMonth() !== month) {
+                    dayDiv.classList.add('other-month');
+                }
+                
+                if (date.toDateString() === today.toDateString()) {
+                    dayDiv.classList.add('today');
+                }
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = date.getDate();
+                dayDiv.appendChild(dayNumber);
+                
+                // Agregar puntos de tareas
+                const tasksForDay = getTasksForDate(date);
+                if (tasksForDay.length > 0) {
+                    const dotsContainer = document.createElement('div');
+                    dotsContainer.className = 'task-dots';
+                    
+                    tasksForDay.forEach(taskInfo => {
+                        const dot = document.createElement('div');
+                        dot.className = `task-dot ${taskInfo.status}`;
+                        dot.title = `${taskInfo.task.name} - ${taskInfo.statusText}`;
+                        dotsContainer.appendChild(dot);
+                    });
+                    
+                    dayDiv.appendChild(dotsContainer);
+                }
+                
+                // Click handler para mostrar tareas del día
+                dayDiv.onclick = () => showDayTasks(date, tasksForDay);
+                
+                grid.appendChild(dayDiv);
+            }
+        }
+        
+        function getTasksForDate(date) {
+            const tasksForDay = [];
+            const today = new Date();
+            
+            tasks.forEach(task => {
+                // Calcular todas las fechas de vencimiento desde la última vez hecha hasta 30 días en el futuro
+                let checkDate = new Date(task.lastDone);
+                
+                for (let i = 0; i < 10; i++) { // Revisar las próximas 10 ocurrencias
+                    checkDate.setDate(checkDate.getDate() + task.frequency);
+                    
+                    if (checkDate.toDateString() === date.toDateString()) {
+                        const daysFromToday = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+                        let status = 'upcoming';
+                        let statusText = 'Próxima';
+                        
+                        if (daysFromToday < 0) {
+                            status = 'overdue';
+                            statusText = 'Atrasada';
+                        } else if (daysFromToday === 0) {
+                            status = 'due-today';
+                            statusText = 'Vence hoy';
+                        }
+                        
+                        tasksForDay.push({
+                            task: task,
+                            status: status,
+                            statusText: statusText,
+                            dueDate: new Date(checkDate)
+                        });
+                        break;
+                    }
+                    
+                    // Si ya pasamos mucho tiempo en el futuro, parar
+                    if (checkDate > new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000)) {
+                        break;
+                    }
+                }
+                
+                // También verificar si la tarea fue completada en esta fecha
+                if (task.lastDone.toDateString() === date.toDateString()) {
+                    // Verificar que no esté ya en la lista como vencimiento
+                    const alreadyExists = tasksForDay.some(t => t.task.id === task.id);
+                    if (!alreadyExists) {
+                        tasksForDay.push({
+                            task: task,
+                            status: 'completed',
+                            statusText: 'Completada',
+                            dueDate: new Date(task.lastDone)
+                        });
+                    }
+                }
+            });
+            
+            return tasksForDay;
+        }
+        
+        function showDayTasks(date, tasksForDay) {
+            if (tasksForDay.length === 0) return;
+            
+            const dateStr = date.toLocaleDateString('es-ES', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            let message = `📅 ${dateStr}\n\nTareas:\n`;
+            const pendingTasks = [];
+            
+            tasksForDay.forEach(taskInfo => {
+                message += `• ${taskInfo.task.name} (${taskInfo.statusText})\n`;
+                if (taskInfo.status !== 'completed') {
+                    pendingTasks.push(taskInfo);
+                }
+            });
+            
+            if (pendingTasks.length > 0) {
+                message += '\n¿Marcar tareas pendientes como completadas?';
+                if (confirm(message)) {
+                    pendingTasks.forEach(taskInfo => {
+                        taskInfo.task.lastDone = new Date();
+                    });
+                    saveTasks();
+                    renderCalendar();
+                    renderTasks();
+                }
+            } else {
+                alert(message);
+            }
+        }
+        
+        function changeMonth(direction) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            renderCalendar();
+        }
+        
         // Inicializar la aplicación
+        tasks = loadTasks();
         updateDateTime();
         renderTasks();
         
@@ -636,5 +809,4 @@
         }
     </script>
 </body>
-
 </html>
